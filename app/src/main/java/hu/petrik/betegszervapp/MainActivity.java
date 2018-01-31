@@ -1,5 +1,6 @@
 package hu.petrik.betegszervapp;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -35,6 +36,14 @@ public class MainActivity extends AppCompatActivity {
                     "    szerv_id INTEGER,\n" +
                     "    FOREIGN KEY (szerv_id) REFERENCES szerv(id)\n" +
                     ");");
+
+            ContentValues beteg = new ContentValues();
+            beteg.put("nev", "Kovacs Bela");
+            beteg.put("taj", "123-456-789");
+            beteg.put("szerv", "sziv");
+            beteg.put("tipus", "AAA-12345");
+            beteg.putNull("szerv_id");
+            long betegId = db.insert("beteg", null, beteg);
         }
 
         @Override
@@ -58,10 +67,10 @@ public class MainActivity extends AppCompatActivity {
 
                 ListView betegLista = (ListView)findViewById(R.id.beteg_lista);
 
-                ArrayList<String> lista = new ArrayList<>();
+                ArrayList<Beteg> lista = new ArrayList<>();
                 Cursor cursor = db.query(
                         "beteg",
-                        new String[] { "nev", "taj" },
+                        new String[] { "id", "nev", "taj", "szerv", "tipus", "szerv_id" },
                         null,
                         null,
                         null,
@@ -70,17 +79,17 @@ public class MainActivity extends AppCompatActivity {
                         null);
 
                 while (cursor.moveToNext()) {
-                    String nev = cursor.getString(0);
-                    String taj = cursor.getString(1);
-                    String sor = nev + " (" + taj + ")";
-                    lista.add(sor);
+                    long id = cursor.getLong(0);
+                    String nev = cursor.getString(1);
+                    String taj = cursor.getString(2);
+                    String szerv = cursor.getString(3);
+                    String tipus = cursor.getString(4);
+                    long szerv_id = cursor.getLong(5);
+                    lista.add(new Beteg(id, nev, taj, szerv, tipus, szerv_id));
                 }
                 cursor.close();
 
-                lista.add("Kovacs Bela (123-456-789)");
-                lista.add("Aasdf Jkl; (111-222-333)");
-
-                ArrayAdapter<String> adapter = new ArrayAdapter<String>(
+                ArrayAdapter<Beteg> adapter = new ArrayAdapter<Beteg>(
                         MainActivity.this,
                         android.R.layout.simple_list_item_1,
                         lista
@@ -90,6 +99,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        
     }
 
     @Override
