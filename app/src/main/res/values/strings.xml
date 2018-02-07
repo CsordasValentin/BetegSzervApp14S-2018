@@ -1,3 +1,14 @@
 <resources>
     <string name="app_name">BetegSzervApp</string>
+    <string name="ujbeteg_nev">Beteg neve:</string>
+    <string name="ujbeteg_taj">TAJ szám:</string>
+    <string name="ujbeteg_szerv">Szerv:</string>
+    <string name="ujbeteg_tipus">Szerv típusa (vércsoport stb.):</string>
+    <string name="ujbeteg_gomb">Új beteg felvétele</string>
+
+    <string-array name="szervek">
+        <item>Szív</item>
+        <item>Vér</item>
+        <item>Vese</item>
+    </string-array>
 </resources>
