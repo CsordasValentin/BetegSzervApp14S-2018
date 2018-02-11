@@ -1,13 +1,14 @@
 package hu.petrik.betegszervapp;
 
-import android.content.ContentValues;
-import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.database.sqlite.SQLiteOpenHelper;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
@@ -15,55 +16,19 @@ import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
 
-    private class DbHelper extends SQLiteOpenHelper {
-
-        public DbHelper(Context context) {
-            super(context, "betegszerv.db", null, 1);
-        }
-
-        @Override
-        public void onCreate(SQLiteDatabase db) {
-            db.execSQL("CREATE TABLE szerv (\n" +
-                    "    id INTEGER PRIMARY KEY AUTOINCREMENT,\n" +
-                    "    tipus TEXT NOT NULL\n" +
-                    ");");
-            db.execSQL("CREATE TABLE beteg (\n" +
-                    "    id INTEGER PRIMARY KEY AUTOINCREMENT,\n" +
-                    "    nev TEXT NOT NULL,\n" +
-                    "    taj TEXT NOT NULL,\n" +
-                    "    szerv TEXT NOT NULL,\n" +
-                    "    tipus TEXT NOT NULL,\n" +
-                    "    szerv_id INTEGER,\n" +
-                    "    FOREIGN KEY (szerv_id) REFERENCES szerv(id)\n" +
-                    ");");
-
-            ContentValues beteg = new ContentValues();
-            beteg.put("nev", "Kovacs Bela");
-            beteg.put("taj", "123-456-789");
-            beteg.put("szerv", "sziv");
-            beteg.put("tipus", "AAA-12345");
-            beteg.putNull("szerv_id");
-            long betegId = db.insert("beteg", null, beteg);
-        }
-
-        @Override
-        public void onUpgrade(SQLiteDatabase sqLiteDatabase, int i, int i1) {
-            // Only one version exists, do nothing
-        }
-    }
-
-    private SQLiteDatabase db;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        Toolbar toolbar = (Toolbar)findViewById(R.id.main_toolbar);
+        setSupportActionBar(toolbar);
+
         AsyncTask.execute(new Runnable() {
             @Override
             public void run() {
-                DbHelper helper = new DbHelper(MainActivity.this);
-                db = helper.getWritableDatabase();
+                DbHelper helper = DbHelper.getInstance(MainActivity.this);
+                SQLiteDatabase db = helper.getWritableDatabase();
 
                 ListView betegLista = (ListView)findViewById(R.id.beteg_lista);
 
@@ -96,6 +61,8 @@ public class MainActivity extends AppCompatActivity {
                 );
 
                 betegLista.setAdapter(adapter);
+
+                db.close();
             }
         });
 
@@ -103,8 +70,21 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        db.close();
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_main, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.menu_ujbeteg:
+                Intent intent = new Intent(this, UjBetegActivity.class);
+                startActivity(intent);
+
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 }
