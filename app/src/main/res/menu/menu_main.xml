@@ -6,4 +6,14 @@
         android:title="@string/ujbeteg_gomb"
         android:orderInCategory="300"
         app:showAsAction="ifRoom"></item>
+    <item
+        android:id="@+id/menu_ujszerv"
+        android:title="@string/ujszerv_gomb"
+        android:orderInCategory="400"
+        app:showAsAction="ifRoom"></item>
+    <item
+        android:id="@+id/menu_frissites"
+        android:title="@string/frissites_gomb"
+        android:orderInCategory="200"
+        app:showAsAction="ifRoom"></item>
 </menu>

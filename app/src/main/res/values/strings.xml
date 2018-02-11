@@ -5,6 +5,8 @@
     <string name="ujbeteg_szerv">Szerv:</string>
     <string name="ujbeteg_tipus">Szerv típusa (vércsoport stb.):</string>
     <string name="ujbeteg_gomb">Új beteg felvétele</string>
+    <string name="ujszerv_gomb">Új szerv felvétele</string>
+    <string name="frissites_gomb">Frissítés</string>
 
     <string-array name="szervek">
         <item>Szív</item>
